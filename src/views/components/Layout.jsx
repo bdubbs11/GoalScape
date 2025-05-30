@@ -5,9 +5,9 @@ function Layout() {
   return (
     <div className="flex flex-col text-primary font-barlow-600">
       <nav id="nav" className="flex flex-row justify-between my-auto w-screen px-6 py-4 text-primary sticky top-0">
-        <Link to="/" className=" hover:opacity-70 text-xl">GoalScape</Link>
+        <Link to="/" className=" hover:opacity-70 text-xl transition ease-in-out duration-200 ">GoalScape</Link>
         <div className="flex gap-10">
-           <Link to="/addGoals" className="  hover:opacity-70 text-xl">Add Goals</Link>
+           <Link to="/addGoals" className=" hover:opacity-70 text-xl transition ease-in-out duration-200">Add Goals</Link>
         </div>
 
 
