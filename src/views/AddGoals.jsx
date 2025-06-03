@@ -109,6 +109,8 @@ function AddGoals(){
               </>
             )}
 
+            {/* tomorrow need to figure out why i can not type in the other field. */}
+
 
 
               <label className="block mb-2 font-medium">Progress (%)</label>
