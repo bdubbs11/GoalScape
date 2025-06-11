@@ -1,10 +1,31 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Edit from "../assets/edit.svg";
 
 function Home() {
   const nextSectionVis = useRef(null);
   const nextSectionMas = useRef(null);
+
+  const [userName, setUserName] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  // fetching user or just user 1 (me)
+  useEffect(() => {
+    fetch('/api/users/1')
+    .then(res => res.json())
+    .then(user => {
+      console.log('Fetched user:', user); 
+      setUserName(user.name)
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error('error fetching user:', err);
+       setLoading(false);
+    });
+  }, []);
+
+
+
   const scrollToVisual = () => {
     nextSectionVis.current?.scrollIntoView({behavior: 'smooth'});
   }
@@ -16,7 +37,9 @@ function Home() {
       <div className="flex flex-col">
 
         <div className="flex flex-col items-center justify-center h-screen -mt-8">
-          <h1 className="text-4xl font-bold mb-4">Welcome to GoalScape</h1>
+          <h1 className="text-4xl font-bold mb-4">
+            Welcome to GoalScape, <span class="underline decoration-solid cursor-pointer ml-1 hover:opacity-70 transition ease-in-out duration-200"> {userName || 'Guest'} </span>
+            </h1>
           <p className="text-lg">Here you can visualize and conceptualize your goals.<Link className="underline decoration-solid cursor-pointer ml-1 hover:opacity-70 transition ease-in-out duration-200" to="/addGoals">Add goal now? </Link></p>
           <div className="flex gap-6 mt-10"><button onClick={scrollToVisual} className="text-sm underline hover:opacity-70 transition ease-in-out duration-200">↓ Scroll to Visual List</button>
             <button onClick={scrollToMaster} className="text-sm underline hover:opacity-70 transition ease-in-out duration-200">↓ Scroll to Master List</button>

@@ -11,6 +11,8 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/addGoals" element={<AddGoals />} />
+{/* if / when adding a login feature need to install bcrypt to hash passcodes */}
+
         </Route>
       </Routes>
     </BrowserRouter>
