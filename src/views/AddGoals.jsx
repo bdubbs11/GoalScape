@@ -9,6 +9,7 @@ function AddGoals(){
   const [showModal, setShowModal] = useState(false);
 
   const [category, setCategory] = useState("");
+  const [otherCategory, setOtherCategory] = useState("");
   const [progress, setProgress] = useState("");
   const [startDate, setStartDate] = useState("");
   const [goalFinishDate, setGoalFinishDate] = useState("");
@@ -23,9 +24,50 @@ function AddGoals(){
     e.preventDefault();
     if (goalInput.trim() !== ""){ // need to add if it is empty try and fill the goal out before you submit it
       setShowModal(true);
-      
     }
+  }
 
+  const handleGoalSubmit = async (e) => {
+    e.preventDefault();
+
+    const goalData = {
+      goal: goalInput,
+      category: category === "Other" ? otherCategory : category,
+      progress: progress,
+      start: startDate,
+      goalFinish: goalFinishDate,
+      notes: notes,
+    };
+
+    try {
+      const response = await fetch('/api/goals/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(goalData),
+      });
+      if(response.ok){
+        console.log('Goal was added Successfully');
+        setShowModal(false);
+        // do i need to reset the set's here once things are added?
+        setGoalInput(""); 
+        setCategory("");
+        setOtherCategory("");
+        setProgress("");
+        setStartDate("");
+        setGoalFinishDate("");
+        setNotes("");
+        
+      } else {
+        const errorText = await response.text();
+        console.error('Response is not ok! Failed to add the new goal');
+        console.error('Status:', response.status);
+        console.error('Response body:', errorText);
+      } 
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
   }
   return (
     <div className="flex flex-col">
@@ -34,9 +76,9 @@ function AddGoals(){
         <div className="col-start-3 col-span-12">
           <h1 className="text-3xl mt-20 font-bold">Enter Your Goals Here</h1>
           {/* search bar */}
-{/* on click open up modal for the rest of the logic */}
-          <form action="" className="space-x-4" onSubmit={handleSubmit}>
-              <input type="text" placeholder="Add your goals here..." onChange={(e) => setGoalInput(e.target.value)} className="border-2 border-primary-200 bg-primary text-background rounded-full items-center focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent my-10 w-2/5 py-4 px-6"/>
+          {/* on click open up modal for the rest of the logic */}
+          <form type="submit" className="space-x-4" onSubmit={handleSubmit}>
+              <input type="text" placeholder="Add your goals here..." value={goalInput} onChange={(e) => setGoalInput(e.target.value)} className="border-2 border-primary-200 bg-primary text-background rounded-full items-center focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent my-10 w-2/5 py-4 px-6"/>
               <button className="bg-accent text-primary font-semibold py-4 px-6 rounded-full hover:bg-accent/70 transition ease-in-out duration-200"> Submit </button>
           </form>
 
@@ -82,7 +124,7 @@ function AddGoals(){
             <img src={Close}  onClick={() => setShowModal(false)} className="w-6 h-6 absolute top-2 right-2 hover:scale-115 transform transition ease-in-out duration-200"alt="Close Icon" /> 
               <h3 className="text-xl font-bold text-center mb-4">{goalInput}</h3>
               
-            <form action="">
+            <form action="" onSubmit={handleGoalSubmit}>
 
 
             <label className="block mb-2 font-medium">Category</label>
@@ -105,7 +147,7 @@ function AddGoals(){
             {category === "Other" && (
               <>
                 <label className="block mb-2 font-medium ">Other</label>
-                <input className="w-full mb-4 border rounded p-2 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent" type="text" placeholder="Please specify your category..." onChange={(e) => setCategory(e.target.value)}/>
+                <input className="w-full mb-4 border rounded p-2 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent" type="text" placeholder="Please specify your category..." onChange={(e) => setOtherCategory(e.target.value)}/>
               </>
             )}
 
@@ -169,5 +211,6 @@ function AddGoals(){
 // type of goal it is. and that tag will be appended to goal in the database.
   );
 }
+
 
 export default AddGoals;

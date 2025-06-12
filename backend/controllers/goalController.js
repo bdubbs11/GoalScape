@@ -17,6 +17,7 @@ const getGoal = async (req, res) => {
     if (!goal) return res.status(404).json({ error: 'Goal not found' });
     res.json(goal);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'DB error' });
   };
 };
@@ -24,13 +25,16 @@ const getGoal = async (req, res) => {
 const addGoal = async (req, res) => {
   try {
     // will be the current user id once user authentication is implemented
+    // console.log("i madee it to the controllelr");
     const user_id = 1;
     const { goal, category, progress, start, goalFinish, notes } = req.body;
+    // console.log("right before the result");
 
     const result = await goalModel.addGoal(user_id, { goal, category, progress, start, goalFinish, notes });
     res.status(201).json({ message: 'Goal added successfully', goalId: result.insertId });
+    // console.log("i am after the result");
   } catch (err) {
-    console.error(err);
+    console.error("i failed here:", err);
     res.status(500).json({ error: 'Failed to add goal' });
   }
 }

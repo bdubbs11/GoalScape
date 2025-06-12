@@ -16,11 +16,16 @@ const getGoalById = async (id) => {
 // add a new goal to the user
 const addGoal = async (user_id ,goal) => {
   const {goal: goalName, category, progress, start, goalFinish, notes } = goal;
-  const [result] = await db.query(
-    'INSERT INTO GOALS (user_id, goal, category, progress, start, goalFinish, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',
-    [user_id, goalName, category, progress, start, goalFinish, notes]
-  );
-  return result;
+ try {
+    const [result] = await db.query(
+      'INSERT INTO goals (user_id, goal, category, progress, started, goal_finish, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [user_id, goalName, category, progress, start, goalFinish, notes]
+    );
+    return result;
+  } catch (error) {
+    console.error('DB Insert error:', error);
+    throw error;
+  }
 };
 
 export default { getAllGoals, getGoalById, addGoal };

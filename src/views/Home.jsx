@@ -7,20 +7,20 @@ function Home() {
   const nextSectionMas = useRef(null);
 
   const [userName, setUserName] = useState('');
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   // fetching user or just user 1 (me)
   useEffect(() => {
     fetch('/api/users/1')
     .then(res => res.json())
     .then(user => {
-      console.log('Fetched user:', user); 
+      // console.log('Fetched user:', user); 
       setUserName(user.name)
-      setLoading(false);
+      // setLoading(false);
     })
     .catch(err => {
       console.error('error fetching user:', err);
-       setLoading(false);
+      //  setLoading(false);
     });
   }, []);
 
