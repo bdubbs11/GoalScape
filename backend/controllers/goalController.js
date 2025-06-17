@@ -3,7 +3,8 @@ import goalModel from "../models/goalModel.js";
 //   function to list all of the goals
 const listGoals = async (req, res) => {
   try {
-    const listOfG = await goalModel.getAllGoals();
+    const user_id = 1;
+    const listOfG = await goalModel.getAllGoals(user_id);
     res.json(listOfG);
   } catch (err) {
     res.status(500).json({ error: 'DB error' });
@@ -13,6 +14,7 @@ const listGoals = async (req, res) => {
 // function to get the goal by id
 const getGoal = async (req, res) => {
   try {
+    console.log(req.params.id);
     const goal = await goalModel.getGoalById(req.params.id);
     if (!goal) return res.status(404).json({ error: 'Goal not found' });
     res.json(goal);

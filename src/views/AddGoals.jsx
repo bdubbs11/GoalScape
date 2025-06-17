@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Close from "../assets/close.svg";
 
 function AddGoals(){
@@ -18,6 +18,9 @@ function AddGoals(){
   // get current date
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString();
+
+  // goals data
+  const [goals, setGoals] = useState([]);
 
   // show the modal
   const handleSubmit = (e) => {
@@ -58,7 +61,9 @@ function AddGoals(){
         setStartDate("");
         setGoalFinishDate("");
         setNotes("");
-        
+
+        // refresh the goals list
+        fetchGoals();
       } else {
         const errorText = await response.text();
         console.error('Response is not ok! Failed to add the new goal');
@@ -69,6 +74,18 @@ function AddGoals(){
       console.error('Fetch error:', error);
     }
   }
+const fetchGoals = () => {
+  fetch('/api/goals')
+    .then(res => res.json())
+    .then(data => setGoals(data))
+    .catch(err => console.error("Error fetching goals", err));
+}
+    useEffect(() => {
+      fetchGoals();
+    }, []);
+
+    const last3goals = goals.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0,3)
+
   return (
     <div className="flex flex-col">
 
@@ -94,21 +111,13 @@ function AddGoals(){
                     </tr>
                   </thead>
                   <tbody className="text-lg">
-                    <tr>
-                      <td className="border-t-3 px-4 py-2">Learn React</td>
-                      <td className="border-t-3 px-4 py-2">Skill Learning</td>
-                      <td className="border-t-3 px-4 py-2">2023-01-01</td>
-                    </tr>
-                    <tr>
-                      <td className="border-t-1 px-4 py-2">Run a marathon</td>
-                      <td className="border-t-1 px-4 py-2">Health & Fitness</td>
-                      <td className="border-t-1 px-4 py-2">2023-01-01</td>
-                    </tr>
-                    <tr>
-                      <td className="border-t-1 px-4 py-2">Read 12 books</td>
-                      <td className="border-t-1 px-4 py-2">Personal Development</td>
-                      <td className="border-t-1 px-4 py-2">2023-01-01</td>
-                    </tr>
+                    {goals.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0,3).map(goal =>( 
+                      <tr>
+                        <td className="border-t-3 px-4 py-2 capitalize">{ goal.goal }</td>
+                        <td className="border-t-3 px-4 py-2 capitalize">{ goal.category }</td>
+                        <td className="border-t-3 px-4 py-2">{ new Date(goal.created_at).toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' }) }</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
             </div>

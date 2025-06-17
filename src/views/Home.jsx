@@ -7,6 +7,7 @@ function Home() {
   const nextSectionMas = useRef(null);
 
   const [userName, setUserName] = useState('');
+  const [goals, setGoals] = useState([]);
   // const [loading, setLoading] = useState(true);
 
   // fetching user or just user 1 (me)
@@ -22,6 +23,19 @@ function Home() {
       console.error('error fetching user:', err);
       //  setLoading(false);
     });
+
+    // Fetch goals
+    fetch('/api/goals')
+      .then(res => res.json())
+      .then(data => {
+        // Example: setGoals(data);
+        setGoals(data);
+        console.log(' goals:', data);
+      })
+      .catch(err => {
+        console.error('Error fetching goals:', err);
+      });
+
   }, []);
 
 
@@ -95,7 +109,48 @@ function Home() {
                   </tr>
                 </thead>
                 <tbody className="text-lg">
+
+                {goals.map(goal => (
                   <tr>
+                    <td className="border-t-3 px-4 py-2 capitalize">{ goal.goal }</td>
+                    <td className="border-t-3 px-4 py-2 capitalize">{ goal.category }</td>
+                    <td className="border-t-3 px-4 py-2">{ goal.progress}%</td>
+                    <td className="border-t-3 px-4 py-2">{ new Date(goal.started).toLocaleDateString('en-US', { year: '2-digit', month: '2-digit', day: '2-digit' }) }</td>
+                    <td className="border-t-3 px-4 py-2">
+                    <div className="relative group inline-block">
+                      <span className="cursor-default">
+                        <span>goal: </span>
+                        {new Date(goal.goal_finish).toLocaleDateString('en-US', {
+                          year: '2-digit',
+                          month: '2-digit',
+                          day: '2-digit',
+                        })}
+                      </span>
+
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-max px-2 py-1 text-sm text-white bg-gray-700 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 whitespace-nowrap">
+                      <span>actual: </span>
+                        {goal.finished
+                          ? new Date(goal.finished).toLocaleDateString('en-US', {
+                              year: '2-digit',
+                              month: '2-digit',
+                              day: '2-digit',
+                            })
+                          : 'Not finished yet'}
+                      </div>
+                    </div>
+                  </td>
+
+
+                    
+                    <td className="border-t-3 px-4 py-2">{ goal.notes }</td>
+                  </tr>
+                ))}
+
+
+
+
+
+                  {/* <tr>
                     <td className="border-t-3 px-4 py-2">Learn React</td>
                     <td className="border-t-3 px-4 py-2">Education</td>
                     <td className="border-t-3 px-4 py-2">50%</td>
@@ -118,7 +173,7 @@ function Home() {
                     <td className="border-t-1 px-4 py-2">23/03/01</td>
                     <td className="border-t-1 px-4 py-2">23/12/31</td>
                     <td className="border-t-1 px-4 py-2 truncate whitespace-nowrap">Currently reading 'Atomic Habits'</td>
-                  </tr>
+                  </tr> */}
                 </tbody>
               </table>
 

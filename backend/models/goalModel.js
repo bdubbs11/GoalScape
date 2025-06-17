@@ -2,8 +2,8 @@ import userController from '../controllers/userController.js';
 import db from '../db.js';
 
 // get all goals from the user
-const getAllGoals = async () => {
-  const [rows] = await db.query('SELECT * FROM goals where user_id = ?', [userController.id]);
+const getAllGoals = async (user_id) => {
+  const [rows] = await db.query('SELECT * FROM goals WHERE user_id = ?', [user_id]);
   return rows;
 };
 
