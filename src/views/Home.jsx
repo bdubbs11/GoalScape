@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Edit from "../assets/edit.svg";
+import PieChart from './components/Piechart.jsx';
 
 function Home() {
   const nextSectionVis = useRef(null);
@@ -28,9 +29,22 @@ function Home() {
     fetch('/api/goals')
       .then(res => res.json())
       .then(data => {
+        // return just data for it to be the full thing querry
+        // this will allow for the pie chart to be the percentage of goal categories...
+        const counts = {};
+        data.forEach(goal => {
+          const category = goal.category;
+          counts[category] = (counts[category] || 0) + 1;
+        });
+
+        const total = data.length;
+        const pieData = Object.entries(counts).map(([label, count]) => ({
+          label,
+          value: ((count / total) * 100).toFixed(2),
+        }));
         // Example: setGoals(data);
-        setGoals(data);
-        console.log(' goals:', data);
+        setGoals(pieData);
+        // console.log(' goals:', data);
       })
       .catch(err => {
         console.error('Error fetching goals:', err);
@@ -72,7 +86,13 @@ function Home() {
               <div className="flex flex-col gap-8 mt-10">
                 {/* pie chart info */}
                 <div className="w-full bg-primary text-background p-6 flex items-center justify-center">
-                  <span className="text-xl font-medium">Pie chart to contain all types of goals (categories)</span>
+
+
+
+                <PieChart data={goals}/>
+
+
+
                 </div>
                 {/* Second row with 2 columns */}
                 <div className="grid grid-cols-2 gap-6">
@@ -106,6 +126,8 @@ function Home() {
                     <th className="px-4 py-2">Finished</th> {/* on hover or something pull up goal expected finsihed date or something? or if its null put imaginative goal maybe gets filled out */}
                     <th className="px-4 py-2">Notes</th>
                     <img src={Edit} className="w-6 h-6 absolute top-2 right-2 hover:scale-115 transition ease-in-out duration-200 transform rounded-full"alt="Edit Icon" /> 
+                    {/* on click of edit make all the fields inside "editable" and replace the edit with save?*/}
+                    {/* so essentially there are text areas populate and leave the current text or whatever it is in but allows you to edit it */}
                   </tr>
                 </thead>
                 <tbody className="text-lg">
