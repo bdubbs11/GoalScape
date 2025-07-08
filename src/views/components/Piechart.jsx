@@ -1,27 +1,76 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 
-const PieChart = ({ data }) => {
+const PieChart = ({ data, onSliceClick }) => {
 
-  console.log(data);
+  // console.log("piechart info", data);
   // series nends to be from the array
   // colors as well?
   // labels needs to be from the array as well
 
-  const series = data?.length ? data.map(item => item.value) : [52, 26, 20, 2];
+  const series = data?.length ? data.map(item => parseFloat(item.value)) : [52, 26, 20, 2];
   const labels = data?.length ? data.map(item => item.label) : ["Direct", "Organic search", "Referrals", "Other"];
 
+  const HEX_COLOR_POOL = [
+    "#1C64F2", "#16BDCA", "#9061F9", "#FACC15", "#EF4444",
+    "#10B981", "#F472B6", "#8B5CF6", "#FB923C", "#22D3EE",
+    "#6366F1", "#14B8A6", "#F59E0B", "#DC2626", "#A855F7",
+    "#3B82F6", "#059669", "#EC4899", "#7C3AED", "#E879F9"
+  ];
+
+const HEX_COLOR_PALETTE = [
+  "#403f39", // base charcoal
+  "#b46357", // base terracotta
+  "#5a534d", // dark taupe
+  "#d6a18b", // light terra peach
+  "#6c5b52", // cool brown
+  "#a25447", // deeper terracotta
+  "#7a6a61", // warm slate
+  "#c97b6a", // soft clay
+  "#91857e", // dusty gray beige
+  "#8e4e3c", // rust brown
+  "#bfaea3", // pale ash
+  "#473f3a", // charcoal variation
+  "#a9685b", // weathered red
+  "#685e58", // smoky taupe
+  "#ce9b88", // desaturated coral
+  "#574d47", // dark stone
+  "#ac786d", // warm dusty rose
+  "#382f2a", // deep coffee
+  "#9f5748", // baked red clay
+  "#84776e"  // muted greige
+];
+
+
+  const colors = HEX_COLOR_PALETTE.slice(0, labels.length);
+
+  // console.log("series:", series);
+  // console.log("labels:", labels);
+
   const chartOptions = {
-    series: [52.8, 26.8, 20.4],
+    series,
     options: {
       chart: {
         type: "pie",
         height: 420,
         width: "100%",
+        events: {
+          dataPointSelection: (event, chartContext, config) => {
+          const clickedIndex = config.dataPointIndex;
+          const label = labels[clickedIndex];
+          const value = series[clickedIndex];
+          
+          //  Replace this with your custom logic
+          onSliceClick?.(label);
+          // console.log(`You clicked on: ${label} (${value}%)`);
+
+          // Example: setSelectedCategory(label);
+        }
+        }
       },
-      colors: ["#1C64F2", "#16BDCA", "#9061F9"],
+      colors,
       stroke: {
-        colors: ["#ffffff"],
+        colors: ["#403f39"],
       },
       plotOptions: {
         pie: {
@@ -31,7 +80,7 @@ const PieChart = ({ data }) => {
           },
         },
       },
-      labels: ["Direct", "Organic search", "Referrals"],
+      labels,
       dataLabels: {
         enabled: true,
         style: {
@@ -41,6 +90,9 @@ const PieChart = ({ data }) => {
       legend: {
         position: "bottom",
         fontFamily: "Inter, sans-serif",
+        labels: {
+          colors: "#403f39",
+        }
       },
       yaxis: {
         labels: {
@@ -62,10 +114,10 @@ const PieChart = ({ data }) => {
   };
 
   return (
-    <div className="max-w-sm w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
+    <div className="max-w-5xl w-full rounded-lg p-4 md:p-6">
       <div className="flex justify-between items-start w-full mb-4">
-        <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
-          Website traffic
+        <h5 className="text-xl text-background font-bold leading-none">
+          Percents of Types of Goals
         </h5>
       </div>
 
@@ -76,41 +128,6 @@ const PieChart = ({ data }) => {
           type="pie"
           height={420}
         />
-      </div>
-
-      <div className="pt-5 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center">
-          <button
-            type="button"
-            className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-          >
-            Last 7 days
-            <svg
-              className="w-2.5 h-2.5 ms-1.5 inline-block"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 10 6"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-            </svg>
-          </button>
-          <a
-            href="#"
-            className="uppercase text-sm font-semibold text-blue-600 hover:text-blue-700 dark:hover:text-blue-500"
-          >
-            Traffic analysis
-            <svg
-              className="w-2.5 h-2.5 ms-1.5 inline-block"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 6 10"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4" />
-            </svg>
-          </a>
-        </div>
       </div>
     </div>
   );
