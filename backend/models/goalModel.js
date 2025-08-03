@@ -28,4 +28,24 @@ const addGoal = async (user_id ,goal) => {
   }
 };
 
-export default { getAllGoals, getGoalById, addGoal };
+  // update a goal
+  const updateGoal = async (id, goal) => {
+    console.log("Updating goal in model:", goal);
+    const { goal: goalName, category, progress, start, goalFinish, notes } = goal;
+    try {
+      console.log("Updating goal in DB:", { id, goalName, category, progress, start, goalFinish, notes });
+      
+      const [result] = await db.query(
+        'UPDATE goals SET goal = ?, category = ?, progress = ?, started = ?, goal_finish = ?, notes = ? WHERE id = ?',
+      [goalName, category, progress, start, goalFinish, notes, id]
+    );
+      
+      console.log("DB update result:", result);
+      return result;
+  } catch (error) {
+    console.error('DB Update error:', error);
+    throw error;
+  }
+};
+
+export default { getAllGoals, getGoalById, addGoal, updateGoal };

@@ -14,7 +14,7 @@ const listGoals = async (req, res) => {
 // function to get the goal by id
 const getGoal = async (req, res) => {
   try {
-    console.log(req.params.id);
+    console.log("GET GOAL ROUTE HIT! ID:", req.params.id);
     const goal = await goalModel.getGoalById(req.params.id);
     if (!goal) return res.status(404).json({ error: 'Goal not found' });
     res.json(goal);
@@ -41,4 +41,23 @@ const addGoal = async (req, res) => {
   }
 }
 
-export default { listGoals, getGoal, addGoal };
+const updateGoal = async (req, res) => {
+  // when a user clicks save on the editable goals all of the goals should be resaved/updated
+try {
+  console.log("UPDATE GOAL ROUTE HIT!");
+  const user_id = 1;
+  const { id, goal, category, progress, start, goalFinish, notes } = req.body;
+  
+  console.log("Received update request:", { id, goal, category, progress, start, goalFinish, notes });
+
+  const result = await goalModel.updateGoal(id, { goal, category, progress, start, goalFinish, notes });
+  console.log("Update result:", result);
+  
+  res.status(200).json({ message: 'Goal updated successfully', goalId: id });
+} catch (err) {
+  console.error("I failed at the update here", err);
+  res.status(500).json({ error: 'Failed to update goal' });
+}
+}
+
+export default { listGoals, getGoal, addGoal, updateGoal };

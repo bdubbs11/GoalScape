@@ -5,8 +5,9 @@ const router = express.Router();
 
 // assume everythjing is user 1 until auth is implemented
 router.get('/', goalController.listGoals);
-router.get('/:id', goalController.getGoal);
 router.post('/add', goalController.addGoal);
+router.put('/update', goalController.updateGoal);
+router.get('/:id', goalController.getGoal);
 
 // router.get('/user/:user_id', goalController.listGoals);
 // router.get('/user/:user_id/goal/:goal_id', goalController.getGoal);

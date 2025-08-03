@@ -3,18 +3,28 @@ import ReactApexChart from "react-apexcharts";
 
 const RadialChart = ({data, selectedCategory}) => {
 // console.log("in radial chart", data);
-const [series, setSeries] = useState([0, 0, 0]);
+const [series, setSeries] = useState([0, 0, 0]); // percentage values
+const [rawCounts, setRawCounts] = useState([0,0,0]); // the real values
+
 useEffect(() => {
   if (Array.isArray(data) && data.length === 3) {
-    setSeries(data);
+    setRawCounts(data);
+    const total = data.reduce((sum, val) => sum + val, 0);
+      const percentSeries =
+        total > 0 ? data.map(val => (val / total) * 100) : [0, 0, 0];
+
+      setSeries(percentSeries);
+    // setSeries(data);
     setTimeout(() => {
       window.dispatchEvent(new Event("resize"));
-    }, 50); // Give time for DOM to update
+    }, 5000); // Give time for DOM to update
   } else {
+    setRawCounts([0, 0, 0]);
     setSeries([0, 0, 0]);
   }
 }, [data]);
 // const series = Array.isArray(data) && data.length === 3 ? data : [0, 0, 0];
+const labels = ["Done", "In progress", "To do"];
 
   const chartOptions = {
     series,
@@ -36,7 +46,7 @@ useEffect(() => {
         },
       },
     },
-    labels: ["Done", "In progress", "To do"],
+    labels,
     legend: {
       show: true,
       position: "bottom",
@@ -44,6 +54,11 @@ useEffect(() => {
     },
     tooltip: {
       enabled: true,
+      y: {
+        formatter: function (_val, { seriesIndex }) {
+          return `${rawCounts[seriesIndex]} ${labels[seriesIndex]}`;
+        },
+      },
     },
   };
 
@@ -58,7 +73,7 @@ useEffect(() => {
       <ReactApexChart
         key={selectedCategory || series.join("-")}
         options={chartOptions}
-        series={chartOptions.series}
+        series={series}
         type="radialBar"
         height={350}
       />
