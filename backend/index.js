@@ -1,6 +1,7 @@
 import express from 'express';
 import userRoutes from './routes/userRoutes.js';
 import goalRoutes from './routes/goalRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import cors from 'cors';
 
 
@@ -37,6 +38,9 @@ app.get('/test/api', (req, res) => {
 app.use('/api/users', userRoutes);
 
 app.use('/api/goals', goalRoutes);
+
+app.use('/api/ai', aiRoutes);
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

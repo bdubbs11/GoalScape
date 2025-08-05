@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Edit from "../assets/edit.svg";
 import PieChart from './components/Piechart.jsx';
 import RadialChart from './components/Radialchart.jsx';
+import AIwrapper from './components/AIwrapper.jsx';
 
 function Home() {
   const nextSectionVis = useRef(null);
@@ -14,6 +15,8 @@ function Home() {
   const [radialGoals, setRadialGoals] = useState([]);
   // this is for the pies
   const [pieSelected, setPieSelected] = useState(null);
+  // grab this from selected pie data
+  const [aiResponseData, setAiResponseData] = useState(null);
   // const [loading, setLoading] = useState(true);
 
   // this is for creating an editing state to the goals
@@ -166,7 +169,7 @@ function Home() {
 
   useEffect(() => {
     if (pieSelected && goals.length > 0) {
-      createRadialGoals(goals, setRadialGoals, pieSelected);
+      createRadialGoals(goals, setRadialGoals, pieSelected, setAiResponseData);
     }
   }, [pieSelected, goals]);
 
@@ -218,7 +221,9 @@ function Home() {
                     <RadialChart data={radialGoals} selectedCategory={pieSelected} />
                   </div>
                   <div className="bg-primary text-background rounded shadow p-6 flex items-center justify-center">
-                    <span className="text-lg">AI overview of goals goes here</span>
+                    {/* lets see if this works raw */}
+                    <AIwrapper aiResponseData={aiResponseData} />
+                    {/* <span className="text-lg">AI overview of goals goes here</span> */}
                   </div>
                 </div>
               </div>
@@ -362,11 +367,15 @@ function createPieGoals(data, setPieGoals){
   setPieGoals(pieData);
 }
 
-function createRadialGoals(data, setRadialGoals, pieSelected){
+function createRadialGoals(data, setRadialGoals, pieSelected, setAiResponseData){
+  
   // from progress of specific goals need to figure out how many are done
   // how many are in progress and hten how many are to do 
   if(pieSelected && data.length > 0){
     const selectedGoals = data.filter(x => x.category === pieSelected);
+    // this is just for the ai response data 
+    console.log("Setting AI response data for category:", pieSelected, "Goals:", selectedGoals);
+    setAiResponseData(selectedGoals);
 
     const total = selectedGoals.length;
     const done = selectedGoals.filter(x => x.progress === 100).length;
