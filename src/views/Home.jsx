@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Edit from "../assets/edit.svg";
+import Delete from "../assets/delete.svg";
 import PieChart from './components/Piechart.jsx';
 import RadialChart from './components/Radialchart.jsx';
 import AIwrapper from './components/AIwrapper.jsx';
@@ -270,6 +271,7 @@ function Home() {
                         />
                       )}
                     </th>
+                    {isEditing && <th className="px-4 py-2"></th>}
                   </tr>
                 </thead>
                 <tbody className="text-lg">
@@ -320,6 +322,19 @@ function Home() {
                       />
                     ) : goal.notes}
                     </td>
+                    {isEditing && (
+                      <td className="border-t-3 px-4 py-2">
+                        <img 
+                          src={Delete} 
+                          className="w-20 h-20 hover:scale-110 transition ease-in-out duration-200 transform cursor-pointer" 
+                          alt="Delete Icon" 
+                          onClick={() => {
+                            // TODO: Add delete functionality
+                            console.log('Delete clicked for goal:', goal.id);
+                          }} 
+                        />
+                      </td>
+                    )}
                   </tr>
                 ))}
                 </tbody>
